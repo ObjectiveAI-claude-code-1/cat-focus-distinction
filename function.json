@@ -1,0 +1,169 @@
+{
+  "type": "scalar.function",
+  "input_schema": {
+    "type": "object",
+    "description": "Input for evaluating the focus distinction of a cat in a photograph. The function examines a single image to determine how sharply the cat is rendered compared to everything else in the frame, scoring the visual priority given to the cat through focus.",
+    "properties": {
+      "image": {
+        "type": "image",
+        "description": "A photograph containing a cat. The image will be evaluated for focus distinction — how crisply the cat is rendered relative to its surroundings. The photograph may be of any quality, lighting condition, or composition. What matters is the relationship between the sharpness of the cat and the sharpness of everything else in the frame."
+      }
+    },
+    "required": [
+      "image"
+    ]
+  },
+  "tasks": [
+    {
+      "type": "vector.completion",
+      "skip": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Look at this photograph of a cat. Focusing only on the cat itself — its fur, whiskers, ears, eyes, and body — how would you describe the sharpness and clarity of the cat as a subject?"
+            },
+            {
+              "$jmespath": "input.image"
+            }
+          ]
+        }
+      ],
+      "responses": [
+        [
+          {
+            "type": "text",
+            "text": "The cat is rendered with excellent sharpness throughout. Its fur shows fine texture and detail, the whiskers are crisply defined, and the edges of its ears and body are clean and well-resolved. The entire cat appears uniformly sharp and visually present."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "The cat has moderate clarity. Some features like the eyes may be reasonably defined, but the sharpness is inconsistent across the cat as a whole — parts of its fur or body appear softer, and fine details are only partially visible."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "The cat appears soft and lacking definition. Its edges are blurred, fur texture is indistinct, and fine details like individual whiskers or coat markings are difficult to make out. The cat does not present itself with visual crispness."
+          }
+        ]
+      ],
+      "output": {
+        "$starlark": "output[\"scores\"][0] * 1.0 + output[\"scores\"][1] * 0.5 + output[\"scores\"][2] * 0.0"
+      }
+    },
+    {
+      "type": "vector.completion",
+      "skip": null,
+      "messages": [
+        {
+          "role": "developer",
+          "content": [
+            {
+              "type": "text",
+              "text": "You are a photography analyst. When shown a photograph containing a cat, you evaluate only the non-cat areas of the image — the background, foreground, and all surrounding elements. You ignore the cat entirely and focus on how sharp or soft the environment appears."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "$jmespath": "input.image"
+            },
+            {
+              "type": "text",
+              "text": "Examine the areas of this photograph that surround the cat — the background, foreground, and any other non-cat elements. How would you characterize the sharpness or softness of those surroundings?"
+            }
+          ]
+        }
+      ],
+      "responses": [
+        [
+          {
+            "type": "text",
+            "text": "The surroundings have receded into soft blur. Background elements are smoothly out of focus, textures have dissolved into indistinct washes of color, and no environmental detail competes for attention. The non-cat areas are visually quiet and subordinate."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "The surroundings show a mixture of softness and definition. Some areas are noticeably blurred, but other elements in the environment retain enough detail and texture to draw the eye. The background is partially receded but not fully subordinate."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "The surroundings are sharp and well-defined. Background elements, textures, and environmental details are clearly rendered with visible structure. The non-cat areas of the image are crisp and visually active, competing for the viewer's attention."
+          }
+        ]
+      ],
+      "output": {
+        "$starlark": "output[\"scores\"][0] * 1.0 + output[\"scores\"][1] * 0.5 + output[\"scores\"][2] * 0.0"
+      }
+    },
+    {
+      "type": "vector.completion",
+      "skip": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "I want to understand the focus hierarchy in this photograph. Compare how sharply the cat is rendered versus how sharply everything else in the frame is rendered. Does the cat emerge as the clear focal point through sharpness, or does it blend into its surroundings?"
+            },
+            {
+              "$jmespath": "input.image"
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "Let me compare the sharpness of the cat to the sharpness of the rest of the frame."
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Yes — how wide is the gap in focus between the cat and its surroundings?"
+            }
+          ]
+        }
+      ],
+      "responses": [
+        [
+          {
+            "type": "text",
+            "text": "The gap is dramatic. The cat is the sole island of crispness in the frame — sharply rendered with clear detail — while the surroundings fall away into pronounced softness. There is a stark, unmistakable difference in focus that makes the cat the undeniable point of visual attention."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "There is a noticeable but modest gap. The cat is somewhat sharper than its surroundings, but the difference in focus is not dramatic. The cat has a mild focus advantage, though the surroundings still retain enough definition that the eye could wander."
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "text": "There is little to no gap in the cat’s favor. The cat and its surroundings are rendered at a similar level of sharpness, or the surroundings are actually sharper than the cat. The photograph does not use focus to single out the cat as the primary subject."
+          }
+        ]
+      ],
+      "output": {
+        "$starlark": "output[\"scores\"][0] * 1.0 + output[\"scores\"][1] * 0.5 + output[\"scores\"][2] * 0.0"
+      }
+    }
+  ],
+  "description": "Scores how sharply a cat is rendered compared to everything else in a photograph. Evaluates the cat's own sharpness, the softness of its surroundings, and the magnitude of the focus gap between the two, producing a scalar from 0.0 to 1.0. High scores mean the cat commands visual attention through focus; low scores mean it does not."
+}

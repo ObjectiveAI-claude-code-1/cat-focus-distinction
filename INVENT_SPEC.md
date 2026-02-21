@@ -1,0 +1,7 @@
+Evaluate the focus distinction of the cat in the photograph. Score how sharply the cat is rendered compared to everything else in the image. The cat should appear more clearly focused than its surroundings — standing out as the crispest, most defined element in the scene.
+
+A cat that is sharply in focus while the background falls into softness or blur scores highly, because the eye is naturally drawn to the sharpest point in any image. A cat that is soft or out of focus while other parts of the image are sharp scores poorly, because the photograph is directing attention away from the cat.
+
+This evaluation is not about whether the image is technically sharp overall — it is about whether the cat enjoys a focus advantage over its environment. An image where everything is equally sharp offers no focus-based guidance and should score lower than one where the cat alone is crisp. What matters is the gap in clarity between the cat and the rest of the frame: the wider that gap in the cat's favor, the stronger the focus distinction.
+
+Score near 1.0 when the cat is the crispest element in the frame with a clear focus differential over its surroundings. Score near 0.0 when the cat is out of focus, softer than its surroundings, or indistinguishable in sharpness from the rest of the scene.
